@@ -2,12 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
+import { PRODUCT_NAME, COMPANY_NAME } from '@/config/site';
+import { Sparkles, Shield, Zap, ArrowLeftRight, Database } from 'lucide-react';
+import { sendContactEmail } from '@/app/actions/contact';
 
 export default function Home() {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    whatsapp: '',
     neighborhood: '',
+    location: '',
+    lots: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -17,6 +22,8 @@ export default function Home() {
   const featuresRef = useRef<HTMLDivElement>(null);
   const comparisonRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const conquestRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observerOptions = {
@@ -32,7 +39,7 @@ export default function Home() {
       });
     }, observerOptions);
 
-    const refs = [heroRef, metricsRef, featuresRef, comparisonRef, ctaRef];
+    const refs = [heroRef, metricsRef, featuresRef, previewRef, conquestRef, comparisonRef, ctaRef];
     refs.forEach((ref) => {
       if (ref.current) observer.observe(ref.current);
     });
@@ -48,17 +55,28 @@ export default function Home() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Validate required fields
+    if (!formData.name || !formData.whatsapp || !formData.neighborhood || !formData.location || !formData.lots) {
+      alert('Por favor completa todos los campos');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Send email using Server Action
+    const result = await sendContactEmail(formData);
     
     setIsSubmitting(false);
-    setIsSuccess(true);
     
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSuccess(false);
-      setFormData({ name: '', email: '', neighborhood: '' });
-    }, 3000);
+    if (result.success) {
+      setIsSuccess(true);
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSuccess(false);
+        setFormData({ name: '', whatsapp: '', neighborhood: '', location: '', lots: '' });
+      }, 3000);
+    } else {
+      alert('Error al enviar el mensaje. Por favor intentá nuevamente.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,8 +103,11 @@ export default function Home() {
               Automatizá expensas, controlá accesos con QR y mejorá la convivencia en un solo lugar. 
               El sistema que los administradores aman y los vecinos confían.
             </p>
-            <button className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl">
-              Probar Demo en Vivo
+            <button 
+              onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              Solicitar Demo
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -163,6 +184,87 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Preview v1.1.0 - Bento Grid */}
+        <section ref={previewRef} className="py-20 bg-gray-50 opacity-0 transition-opacity duration-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
+              Preview v1.1.0
+            </h2>
+            <p className="text-center text-gray-600 mb-12 text-lg">
+              Nuevas funcionalidades que transformarán tu gestión
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* IA de Conciliación - Large Card */}
+              <div className="md:col-span-2 bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl p-8 text-white shadow-xl">
+                <div className="flex items-start gap-6">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold mb-3">Asistente Administrativo con IA</h3>
+                    <p className="text-blue-100 text-lg leading-relaxed">
+                      Optimice su gestión con inteligencia artificial. Nuestra IA redacta comunicados profesionales para los vecinos y mejora la redacción de sus mensajes, ahorrando un 80% de tiempo en tareas cotidianas.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Módulo Obras */}
+              <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-7 h-7 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Módulo Obras</h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      Validación de ART y seguros en tiempo real con bloqueo automático en guardia.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance Boost */}
+              <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-7 h-7 text-yellow-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Performance Boost</h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      Optimización de carga y respuesta instantánea para una experiencia fluida.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Banner de Conquista (Switching Zero) */}
+        <section ref={conquestRef} className="py-16 bg-gradient-to-r from-orange-500 to-red-600 opacity-0 transition-opacity duration-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center text-white">
+              <div className="flex justify-center gap-4 mb-6">
+                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                  <ArrowLeftRight className="w-8 h-8 text-white" />
+                </div>
+                <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                  <Database className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                ¿Querés migrar tus datos desde otro sistema?
+              </h3>
+              <p className="text-lg md:text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed">
+                Te ayudamos con la transición completa de tu historial sin cargo y sin errores.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Comparative Section */}
         <section ref={comparisonRef} className="py-20 bg-white opacity-0 transition-opacity duration-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -195,10 +297,10 @@ export default function Home() {
                 </ul>
               </div>
 
-              {/* Gestión Comisiones */}
+              {/* {PRODUCT_NAME} */}
               <div className="bg-green-50 rounded-2xl p-8 border-2 border-green-200">
                 <h3 className="text-2xl font-bold text-green-600 mb-6">
-                  Gestión Comisiones
+                  {PRODUCT_NAME}
                 </h3>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
@@ -224,11 +326,11 @@ export default function Home() {
         </section>
 
         {/* CTA Final */}
-        <section ref={ctaRef} className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 opacity-0 transition-opacity duration-700">
+        <section id="contact-form" ref={ctaRef} className="py-20 bg-gradient-to-r from-blue-600 to-blue-800 opacity-0 transition-opacity duration-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl">
               <h2 className="text-4xl font-bold text-center text-gray-900 mb-4">
-                Empezá a transformar tu comunidad hoy
+                Solicitá tu Cotización Personalizada
               </h2>
               <p className="text-center text-gray-600 mb-8">
                 Completá el formulario y nos pondremos en contacto con vos
@@ -252,7 +354,7 @@ export default function Home() {
                 <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre
+                      Nombre *
                     </label>
                     <input
                       type="text"
@@ -266,21 +368,21 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email
+                      WhatsApp *
                     </label>
                     <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
+                      type="text"
+                      name="whatsapp"
+                      value={formData.whatsapp}
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="tu@email.com"
+                      placeholder="+54 11 1234-5678"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nombre del Barrio
+                      Barrio/Consorcio *
                     </label>
                     <input
                       type="text"
@@ -292,12 +394,40 @@ export default function Home() {
                       placeholder="Barrio Los Pinos"
                     />
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Localidad *
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Buenos Aires"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Cantidad de Lotes *
+                    </label>
+                    <input
+                      type="text"
+                      name="lots"
+                      value={formData.lots}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="50"
+                    />
+                  </div>
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? 'Enviando...' : 'Solicitar Demo'}
+                    {isSubmitting ? 'Enviando...' : 'Solicitar Cotización Personalizada'}
                   </button>
                 </form>
               )}
@@ -310,7 +440,7 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-400">
-            © 2024 Gestión Comisiones. Todos los derechos reservados.
+            {PRODUCT_NAME} | Powered by {COMPANY_NAME}
           </p>
         </div>
       </footer>
