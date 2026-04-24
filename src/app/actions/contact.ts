@@ -21,7 +21,7 @@ export async function sendContactEmail(formData: {
     }
 
     await resend.emails.send({
-      from: 'contacto@landing-gestion-comisiones.com',
+      from: 'onboarding@resend.dev',
       to: 'alejandro.nigrelli@gmail.com',
       subject: `Nuevo Lead: ${name} - ${neighborhood}`,
       html: `
