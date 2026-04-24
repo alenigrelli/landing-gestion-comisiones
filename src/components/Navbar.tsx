@@ -22,22 +22,22 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <div className="flex items-center flex-1">
             <div className="flex-shrink-0">
               <div className="flex flex-col">
-                <span className="text-2xl font-bold text-blue-600">
+                <span className="text-lg sm:text-2xl font-bold text-blue-600">
                   {PRODUCT_NAME}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 hidden sm:block">
                   Powered by {COMPANY_NAME}
                 </span>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button 
               onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium shadow-md"
+              className="px-3 py-1.5 sm:px-6 sm:py-2 bg-blue-600 text-white text-sm sm:text-base rounded-full hover:bg-blue-700 transition-colors font-medium shadow-md"
             >
               Solicitar Demo
             </button>
