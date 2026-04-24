@@ -2,7 +2,7 @@
 
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function sendContactEmail(formData: {
   name: string;
@@ -13,6 +13,12 @@ export async function sendContactEmail(formData: {
 }) {
   try {
     const { name, whatsapp, neighborhood, location, lots } = formData;
+
+    if (!resend) {
+      console.log('RESEND_API_KEY not configured, simulating email send');
+      console.log('Lead data:', { name, whatsapp, neighborhood, location, lots });
+      return { success: true };
+    }
 
     await resend.emails.send({
       from: 'contacto@landing-gestion-comisiones.com',
