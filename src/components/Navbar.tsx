@@ -35,9 +35,6 @@ export default function Navbar() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
-              Entrar
-            </button>
             <button 
               onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors font-medium shadow-md"
