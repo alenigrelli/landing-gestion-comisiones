@@ -16,7 +16,7 @@ export async function sendContactEmail(formData: {
 
     await resend.emails.send({
       from: 'contacto@landing-gestion-comisiones.com',
-      to: 'alenigrelli@gmail.com',
+      to: 'alejandro.nigrelli@gmail.com',
       subject: `Nuevo Lead: ${name} - ${neighborhood}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
